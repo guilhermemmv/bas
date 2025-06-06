@@ -118,6 +118,10 @@ snode* slist_backspace(snode* node) {
 	snode* prev = node->prev;
 	if (prev != NULL) {
 		if (prev->prev != NULL) prev->prev->next = node;
+		else {
+			buffer_start_point = node;
+			first_printed_point = node;
+		}
 		node->prev = prev->prev;
 		free(prev);
 	}
@@ -128,6 +132,10 @@ snode* slist_delete(snode* node) {
 	snode* next = node->next;
 	if (next != NULL) {
 		if (node->prev != NULL) node->prev->next = node->next;
+		else {
+			buffer_start_point = next;
+			first_printed_point = next;
+		}
 		node->next->prev = node->prev;
 		free(node);
 		return next;
@@ -303,7 +311,6 @@ int main() {
 						putc(cp->value, fptr);
 						cp = cp->next;
 					}
-					fclose(fptr);
 				} else {
 					while (filename[0] == '\0') {
 						clear();
@@ -382,7 +389,7 @@ int main() {
 			first_printed_point = slist_previous_line(first_printed_point, 0);
 		}
 	} while (running);
-	erase();
 	endwin();
+	refresh();
 	return 0;
 }
